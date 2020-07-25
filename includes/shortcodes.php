@@ -36,30 +36,6 @@ class ShortcodesManager {
      */
     private $campains_manager;
 
-    /**
-     * Choosen_campain.
-     * 
-     * The campain choose by the user
-     * 
-     * @since 1.0.0
-     * @access private
-     * 
-     * @var Campain
-     */
-    private $choosen_campain;
-
-    /**
-     * Choosen_template.
-     * 
-     * The template choose by the user
-     * 
-     * @since 1.0.0
-     * @access private
-     * 
-     * @var Template
-     */
-    private $choosen_template;
-
 	/**
 	 * ShortcodesManager constructor.
 	 *
@@ -103,6 +79,9 @@ class ShortcodesManager {
             return;
         }
 
+        $choosen_campain = null;
+        $choosen_template = null;
+
         // If the user want to delete a campain
         if ( isset( $_GET['echo_campain_to_delete'] ) ) {
             $this->campains_manager->delete_campain( $_GET['echo_campain_to_delete'] );
@@ -110,60 +89,45 @@ class ShortcodesManager {
         
         //If the user choose a specific campain, we select it
         if ( isset( $_GET['echo_choosen_campain'] ) ) {
-            $this->choosen_campain = $this->campains_manager->get_campain( $_GET['echo_choosen_campain'] );
+            $choosen_campain = $this->campains_manager->get_campain( $_GET['echo_choosen_campain'] );
         }
 
         // If the user want to create a new campain, we select it
         if ( isset( $_GET['echo_new_campain'] ) && ! empty( $_GET['echo_new_campain'] ) ) {
-            $this->choosen_campain = $this->campains_manager->create_campain( $_GET['echo_new_campain'] );
+            $choosen_campain  = $this->campains_manager->create_campain( $_GET['echo_new_campain'] );
+
+            // We did this because echo_new_template cannot be in get keys in the same time than echo_new_campain
+            // So we need a first template to be able to set_template settings and so, select the new campain when created
+            $choosen_template = $choosen_campain->new_template();
         }
 
-        // If the campain is null (no value pass in get) or false (the value pass is not valid), get the first campain
-        if ( $this->choosen_campain === null || $this->choosen_campain === false ) {
-            $campains = $this->campains_manager->get_campains();
+        // If the campain is not null (no value pass in get) and not false (the value pass is not valid), we can try to get the template
+        if ( $choosen_campain !== null && $choosen_campain !== false ) {
+
+            // If the user want to delete a template
+            if ( isset( $_GET['echo_template_to_delete'] ) ) {
+                $choosen_campain->delete_template( $_GET['echo_template_to_delete'] );
+            }
             
-            // Create a new campain name default if this user has no campain
-            if ( empty( $campains ) ) {
-                $this->choosen_campain = $this->campains_manager->create_campain( 'default' );
+            // If the user choose a specific template, we select it
+            if ( isset( $_GET['echo_choosen_template'] ) ) {
+                $choosen_template = $choosen_campain->get_template( $_GET['echo_choosen_template'] );
             }
-            // Or choose the first one
-            else {
-                $this->choosen_campain = array_values( $campains )[0];
+    
+            // If the user want to create a new template, we select it
+            if ( isset( $_GET['echo_new_template'] ) && ! empty( $_GET['echo_new_template'] ) ) {
+                $choosen_template = $choosen_campain->new_template();
             }
-        }
+    
+            // If the template is not null (no value pass in get) and not false (the value pass is not valid) we can set template settings
+            if ( $choosen_template !== null && $choosen_template !== false ) {
 
-        // If the user want to delete a template
-        if ( isset( $_GET['echo_template_to_delete'] ) ) {
-            $this->choosen_campain->delete_template( $_GET['echo_template_to_delete'] );
-        }
-        
-        // If the user choose a specific template, we select it
-        if ( isset( $_GET['echo_choosen_template'] ) ) {
-            $this->choosen_template = $this->choosen_campain->get_template( $_GET['echo_choosen_template'] );
-        }
-
-        // If the user want to create a new template, we select it
-        if ( isset( $_GET['echo_new_template'] ) && ! empty( $_GET['echo_new_template'] ) ) {
-            $this->choosen_template = $this->choosen_campain->new_template();
-        }
-
-        // If the template is null (no value pass in get) or false (the value pass is not valid), get the first template of the campain
-        if ( $this->choosen_template === null || $this->choosen_template === false ) {
-            $templates = $this->choosen_campain->get_templates();
-            
-            // Create a new template if this user has no template for this campain
-            if ( empty( $templates ) ) {
-                $this->choosen_template = $this->choosen_campain->new_template();
-            }
-            // Or choose the first one
-            else {
-                $this->choosen_template = array_values( $templates )[0];
+                // Set the user choice into database
+                $this->campains_manager->set_template_settings( $choosen_campain, $choosen_template );
             }
         }
 
-        /**
-         * 
-         */
+        // Change the file folder of each echo file fields to put them into a campain/template folder
         require_once ECHO_PATH . 'includes/fields-manager.php';
         foreach ( FieldsManager::get_echo_fields_name() as $field_name ) {
             add_filter( 'tfi_field_file_path_' . $field_name, array( $this, 'update_echo_data' ) );
@@ -210,9 +174,13 @@ class ShortcodesManager {
         if ( ! $this->user->is_ok() ) {
             return;
         }
+        
+        $settings = $this->campains_manager->get_template_settings();
 
-        $campains = $this->campains_manager->get_campains();
-        $templates = $this->choosen_campain->get_templates();
+        $campains           = $this->campains_manager->get_campains();
+        $choosen_campain    = $settings['campain'];
+        $templates          = $choosen_campain->get_templates();
+        $choosen_template   = $settings['template'];
 
         $o = '<form class="tfi-user-form form-echo" action="' . esc_attr( get_permalink( get_the_ID() ) ) . '" method="GET">';
         $o.=    '<table class="form-table">';
@@ -225,7 +193,7 @@ class ShortcodesManager {
         $o.=            '<td>';
         $o.=                '<select onchange="this.form.submit()" id="echo-campain-select" name="echo_choosen_campain">';
         foreach ( $campains as $campain ) {
-        $o.=                    '<option value="' . $campain->id . '" ' . ( $campain->id === $this->choosen_campain->id ? ' selected' : '' ) . '>' . $campain->nice_name . '</option>';
+        $o.=                    '<option value="' . $campain->id . '" ' . ( $campain->id === $choosen_campain->id ? ' selected' : '' ) . '>' . $campain->nice_name . '</option>';
         }
         $o.=                '</select>';
         $o.=                '<input onclick="document.getElementById(\'echo-campain-select\').setAttribute(\'name\', \'echo_campain_to_delete\'); this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Delete this campain' ) . '" />';
@@ -251,7 +219,7 @@ class ShortcodesManager {
         $o.=            '<td>';
         $o.=                '<select onchange="this.form.submit()" id="echo-template-select" name="echo_choosen_template">';
         foreach ( $templates as $template ) {
-        $o.=                    '<option value="' . $template->id . '" ' . ( $template->id === $this->choosen_template->id ? ' selected' : '' ) . '>' . $template->nice_name . '</option>';
+        $o.=                    '<option value="' . $template->id . '" ' . ( $template->id === $choosen_template->id ? ' selected' : '' ) . '>' . $template->nice_name . '</option>';
         }
         $o.=                '</select>';
         $o.=                '<input id="echo-new-template" type="hidden" name="echo_new_template" value="" />';
@@ -280,8 +248,9 @@ class ShortcodesManager {
      * @return string           The new path for the file
      */
     public function update_echo_data( $value ) {
+        $settings       = $this->campains_manager->get_template_settings();
         $echo_folder    = tfi_get_user_file_folder_path( $this->user->id, 'echo', false );
-        $new_folder     = $echo_folder . '/' . $this->choosen_campain->id . '/' . $this->choosen_template->id;
+        $new_folder     = $echo_folder . '/' . $settings['campain']->id . '/' . $settings['template']->id;
         $new_value      = $new_folder . substr( $value, strlen( $echo_folder ) );
         
         return $new_value;
