@@ -120,14 +120,14 @@ class CampainsManager {
 	public function create_campain( $campain_id ) {
 		if ( $this->user === null ) {
 			return false;
-		}
-
+        }
+        
+        // Sanitize the name
+        $campain_id = preg_replace( '/[^a-z0-9_-]/', '', str_replace( ' ', '_', strtolower( $campain_id ) ) );
 		$campain = $this->get_campain( $campain_id );
 
-		/**
-		 * Creation if it doesn't exist
-		 */
-		if ( $campain === false ) {
+        // Create the campin if it doesn't exist
+		if ( $campain === false && ! empty( $campain_id ) ) {
 			$dir = $this->user_dir() . $campain_id;
 			wp_mkdir_p( $dir );
 

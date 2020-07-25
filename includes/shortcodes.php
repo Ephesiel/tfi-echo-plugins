@@ -13,6 +13,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ShortcodesManager {
 
     /**
+     * User.
+     * 
+     * Current user
+     * 
+     * @since 1.0.0
+     * @access private
+     * 
+     * @var User
+     */
+    private $user;
+
+    /**
      * Campains_manager.
      * 
      * The object which knows everything about campains and templates of the user 
@@ -84,30 +96,37 @@ class ShortcodesManager {
         require_once TFI_PATH . 'includes/user.php';
         require_once ECHO_PATH . 'includes/campains-manager.php';
 
-        $this->campain_manager = new CampainsManager( new \TFI\User( get_current_user_id() ) );
+        add_filter( 'tfi_user_page_error', array( $this, 'test' ) );
+
+        $this->user = new \TFI\User( get_current_user_id() );
+        $this->campains_manager = new CampainsManager( $this->user );
+
+        if ( ! $this->user->is_ok() ) {
+            return;
+        }
 
         // If the user want to delete a campain
         if ( isset( $_GET['echo_campain_to_delete'] ) ) {
-            $this->campain_manager->delete_campain( $_GET['echo_campain_to_delete'] );
+            $this->campains_manager->delete_campain( $_GET['echo_campain_to_delete'] );
         }
         
         //If the user choose a specific campain, we select it
         if ( isset( $_GET['echo_choosen_campain'] ) ) {
-            $this->choosen_campain = $this->campain_manager->get_campain( $_GET['echo_choosen_campain'] );
+            $this->choosen_campain = $this->campains_manager->get_campain( $_GET['echo_choosen_campain'] );
         }
 
         // If the user want to create a new campain, we select it
         if ( isset( $_GET['echo_new_campain'] ) && ! empty( $_GET['echo_new_campain'] ) ) {
-            $this->choosen_campain = $this->campain_manager->create_campain( $_GET['echo_new_campain'] );
+            $this->choosen_campain = $this->campains_manager->create_campain( $_GET['echo_new_campain'] );
         }
 
         // If the campain is null (no value pass in get) or false (the value pass is not valid), get the first campain
         if ( $this->choosen_campain === null || $this->choosen_campain === false ) {
-            $campains = $this->campain_manager->get_campains();
+            $campains = $this->campains_manager->get_campains();
             
             // Create a new campain name default if this user has no campain
             if ( empty( $campains ) ) {
-                $this->choosen_campain = $this->campain_manager->create_campain( 'default' );
+                $this->choosen_campain = $this->campains_manager->create_campain( 'default' );
             }
             // Or choose the first one
             else {
@@ -143,6 +162,10 @@ class ShortcodesManager {
                 $this->choosen_template = array_values( $templates )[0];
             }
         }
+    }
+
+    public function test( $err ) {
+        return $err . '<strong>THIS IS A TEST</strong>';
     }
 
     /**
@@ -182,7 +205,11 @@ class ShortcodesManager {
      * @access public
      */
     public function display_template_selection( $atts = array(), $content = null, $tag = '' ) {
-        $campains = $this->campain_manager->get_campains();
+        if ( ! $this->user->is_ok() ) {
+            return;
+        }
+
+        $campains = $this->campains_manager->get_campains();
         $templates = $this->choosen_campain->get_templates();
 
         $o = '<form class="tfi-user-form form-echo" action="' . esc_attr( get_permalink( get_the_ID() ) ) . '" method="GET">';
