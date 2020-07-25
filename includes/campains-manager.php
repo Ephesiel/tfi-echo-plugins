@@ -45,8 +45,17 @@ class CampainsManager {
      * @param TFI\User $user	The user to get campain from.
      */
 	public function __construct( $user ) {
-		$this->user = $user->is_ok() ? $user : null;
-	}
+        if ( $user->is_ok() ) {
+            $this->user = $user;
+        }
+    }
+
+    /**
+     * This method will update the database to store which template is the one point by  
+     */
+    public function set_template_settings( $campain, $template ) {
+
+    }
 
 	/**
 	 * Get_campains.
@@ -66,7 +75,7 @@ class CampainsManager {
 		if ( $this->campains === null ) {
 			require_once ECHO_PATH . 'includes/campain.php';
 
-			$folders = glob( $this->user_dir() . '*', GLOB_ONLYDIR );
+			$folders = glob( $this->campain_user_dir() . '*', GLOB_ONLYDIR );
 			$this->campains = array();
 
 			foreach ( $folders as $folder ) {
@@ -128,7 +137,7 @@ class CampainsManager {
 
         // Create the campin if it doesn't exist
 		if ( $campain === false && ! empty( $campain_id ) ) {
-			$dir = $this->user_dir() . $campain_id;
+			$dir = $this->campain_user_dir() . $campain_id;
 			wp_mkdir_p( $dir );
 
 			$campain = new Campain( $dir );
@@ -157,9 +166,9 @@ class CampainsManager {
 	}
 
 	/**
-	 * User_dir.
+	 * Campain_user_dir.
 	 * 
-	 * Return the directory of the user inside the echo upload folder.
+	 * Return the directory of the user inside the echo campain folder.
 	 * Campains are stored here.
 	 * 
 	 * @since 1.0.0
@@ -168,8 +177,8 @@ class CampainsManager {
 	 * @return string	The path for the current user
 	 * @return false	If an error occured
 	 */
-	private function user_dir() {
-		if ( $this->user === null || ! defined( 'ECHO_UPLOAD_FOLDER_DIR' ) ) {
+	private function campain_user_dir() {
+		if ( $this->user === null || ! defined( 'ECHO_CAMPAIN_FOLDER_DIR' ) ) {
 			return false;
 		}
 
@@ -179,6 +188,6 @@ class CampainsManager {
 			return false;
 		}
 
-		return ECHO_UPLOAD_FOLDER_DIR . $wp_user->user_nicename . '/';
+		return ECHO_CAMPAIN_FOLDER_DIR . $wp_user->user_nicename . '/';
 	}
 }

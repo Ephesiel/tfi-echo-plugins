@@ -22,6 +22,7 @@ class InstallManager {
      * @static
      */
     public static function plugin_activation() {
+        self::create_table();
     }
 
     /**
@@ -34,6 +35,33 @@ class InstallManager {
      * @static
      */
     public static function plugin_deactivation() {
+    }
+
+    /**
+     * Create_tables
+     * 
+     * Create the table required for the plugin.
+     * This method can be called multiple times (at activation for example)
+     * Because the dbDelta function will check the existence of the table in the database.
+     * 
+     * @since 1.0.0
+     * @access private
+     * @static
+     * @global wpdb     $wpdb           The database object to add the new table
+     */
+    private static function create_table() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+    
+        $sql = "CREATE TABLE " . $wpdb->prefix . ECHO_TABLE . " (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            user_id int(11) NOT NULL UNIQUE,
+            datas longtext NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate";
+        
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
     }
 }
 

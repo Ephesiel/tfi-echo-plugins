@@ -25,7 +25,25 @@ class UninstallManager {
      * @access public 
      */
     public function __construct() {
+        $this->drop_table();
         $this->delete_upload_dir();
+    }
+    
+    /**
+     * Drop_table.
+     * 
+     * Drop the table with all echo user datas.
+     * 
+     * @since 1.0.0
+     * @access private
+     * @global wpdb     $wpdb           The database object to drop the table
+     */
+    private function drop_table() {
+        global $wpdb;
+
+        $wpdb->query(
+            "DROP TABLE IF EXISTS " . $wpdb->prefix . ECHO_TABLE
+        );
     }
     
     /**
@@ -37,8 +55,8 @@ class UninstallManager {
      * @access private
      */
     private function delete_upload_dir() {
-        if ( defined( 'ECHO_UPLOAD_FOLDER_DIR' ) ) {
-            tfi_delete_files( ECHO_UPLOAD_FOLDER_DIR );
+        if ( defined( 'ECHO_CAMPAIN_FOLDER_DIR' ) ) {
+            tfi_delete_files( ECHO_CAMPAIN_FOLDER_DIR );
         }
     }
 }

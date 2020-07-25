@@ -96,8 +96,6 @@ class ShortcodesManager {
         require_once TFI_PATH . 'includes/user.php';
         require_once ECHO_PATH . 'includes/campains-manager.php';
 
-        add_filter( 'tfi_user_page_error', array( $this, 'test' ) );
-
         $this->user = new \TFI\User( get_current_user_id() );
         $this->campains_manager = new CampainsManager( $this->user );
 
@@ -162,10 +160,14 @@ class ShortcodesManager {
                 $this->choosen_template = array_values( $templates )[0];
             }
         }
-    }
 
-    public function test( $err ) {
-        return $err . '<strong>THIS IS A TEST</strong>';
+        /**
+         * 
+         */
+        require_once ECHO_PATH . 'includes/fields-manager.php';
+        foreach ( FieldsManager::get_echo_fields_name() as $field_name ) {
+            add_filter( 'tfi_field_file_path_' . $field_name, array( $this, 'update_echo_data' ) );
+        }
     }
 
     /**
@@ -184,7 +186,7 @@ class ShortcodesManager {
         $atts = array_change_key_case( (array)$atts, CASE_LOWER );
 
         require_once ECHO_PATH . 'includes/fields-manager.php';
-        $fields = implode( ',', array_keys( Fieldsmanager::$echo_fields ) );
+        $fields = implode( ',', Fieldsmanager::get_echo_fields_name() );
 
         $shortcode = '[tfi_user_form fields="' . $fields . '"';
         if ( isset( $atts['preview'] ) ) {
@@ -261,5 +263,27 @@ class ShortcodesManager {
         $o.= '</form>';
 
         return $o;
+    }
+
+    /**
+     * Update_echo_data.
+     * 
+     * This method is connected with the tfi_field_file_path_$fieldname hook and is called for every echo field.
+     * It will return the value of the path according to the choosen templates.
+     * It will allows to have multiple echo image for the same field !
+     * The new path will be user_name/echo/campain/template/...
+     * 
+     * @since 1.0.0
+     * @access public
+     * 
+     * @param string $value     The path of the folder which will be modify
+     * @return string           The new path for the file
+     */
+    public function update_echo_data( $value ) {
+        $echo_folder    = tfi_get_user_file_folder_path( $this->user->id, 'echo', false );
+        $new_folder     = $echo_folder . '/' . $this->choosen_campain->id . '/' . $this->choosen_template->id;
+        $new_value      = $new_folder . substr( $value, strlen( $echo_folder ) );
+        
+        return $new_value;
     }
 }
