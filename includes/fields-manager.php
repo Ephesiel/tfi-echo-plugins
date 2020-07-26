@@ -25,7 +25,7 @@ class FieldsManager {
         if ( ! array_key_exists( 'echo_fields', self::$cache ) ) {
             self::$cache['echo_fields'] = array(
                 'echo_background' => array(
-                    'real_name' => 'Arrière-plan',
+                    'real_name' => __( 'Arrière-plan' ),
                     'type' => 'image',
                     'default' => '',
                     'users' => array( 'default_type' ),
@@ -36,7 +36,7 @@ class FieldsManager {
                     )
                 ),
                 'echo_menu-background' => array(
-                    'real_name' => 'Menu Background',
+                    'real_name' => __( 'Menu Background' ),
                     'type' => 'image',
                     'default' => '',
                     'users' => array( 'default_type' ),
@@ -44,6 +44,24 @@ class FieldsManager {
                     'special_params' => array(
                         'width' => 1080,
                         'height' => 1920
+                    )
+                ),
+                'echo_bon-kdo' => array(
+                    'real_name' => __( 'Bon cadeau' ),
+                    'type' => 'multiple',
+                    'default' => '',
+                    'users' => array( 'default_type' ),
+                    'folder' => self::get_echo_folder(),
+                    'special_params' => array(
+                        'min_length' => 5,
+                        'max_length' => 80,
+                        'type' => 'image',
+                        'multiple_field_special_params' => array(
+                            'mandatory_domains' => array(
+                                'width' => 716,
+                                'height' => 0
+                            )
+                        )
                     )
                 )
             );
@@ -84,5 +102,19 @@ class FieldsManager {
         }
 
         return self::$cache['echo_field_objects'];
+    }
+
+    public static function get_echo_default_values() {
+        if ( ! isset( self::$cache['echo_default_values'] ) ) {
+            $values = array();
+
+            foreach ( self::get_echo_field_objects() as $field ) {
+                $values[$field->name] = $field->default_value();
+            }
+
+            self::$cache['echo_default_values'] = $values;
+        }
+
+        return self::$cache['echo_default_values'];
     }
 }

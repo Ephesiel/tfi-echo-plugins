@@ -52,6 +52,18 @@ class CampainsManager {
     private $template_settings;
 
     /**
+     * New_template_setting.
+     * 
+     * This is a boolean which keep in mind if the template setting changed recently
+     * 
+     * @since 1.0.0
+     * @access private
+     * 
+     * @var bool
+     */
+    private $new_template_setting;
+
+    /**
      * Campainsmanager constructor
      * 
      * @since 1.0.0
@@ -62,6 +74,8 @@ class CampainsManager {
 	public function __construct( $user ) {
         if ( $user->is_ok() ) {
             $this->user = $user;
+            $this->new_template_setting = false;
+            add_action( 'tfi_user_datas_changed', array( $this, 'on_datas_changed' ), 10, 2 );
         }
     }
 
@@ -105,6 +119,44 @@ class CampainsManager {
             'campain' => $campain,
             'template' => $template
         );
+
+        /**
+         * We set this value to true because we don't need to reupdate the template on user_datas_changed because we just push template values
+         * Note: this is because the hook tfi_user_datas_changed is called by the method User::set_values_for_fields.
+         * The on_datas_changed method will reset this value to false when pass
+         */
+        $this->new_template_setting = true;
+        $this->user->set_values_for_fields( $template->get_values() );
+    }
+
+    /**
+     * 
+     */
+    public function on_datas_changed( $user, $fields ) {
+        if ( $user->id !== $this->user->id ) {
+            return;
+        }
+        /**
+         * If the update is due to a template settings changement, we don't want to rewrite the template file
+         */
+        if ( $this->new_template_setting === true ) {
+            $this->new_template_setting = false;
+            return;
+        }
+
+        require_once ECHO_PATH . 'includes/fields-manager.php';
+
+        $template    = $this->get_template_settings()['template'];
+        $echo_fields = FieldsManager::get_echo_fields_name();
+        $values      = $template->get_values();
+
+        foreach ( $fields as $field ) {
+            if ( in_array( $field->name, $echo_fields ) ) {
+                $values[$field->name] = $field->get_value_for_user( $user, 'upload_path' );
+            }
+        }
+
+        $template->update_values( $values );
     }
 
     /**
@@ -149,7 +201,7 @@ class CampainsManager {
                 $template = $campain->get_template( $result->template_id );
             }
 
-            // If the template is stille false, we get the default one
+            // If the template is still false, we get the default one
             if ( $template === false ) {
                 $template = $campain->get_default_template();
             }

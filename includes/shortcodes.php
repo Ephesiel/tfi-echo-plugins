@@ -44,7 +44,8 @@ class ShortcodesManager {
 	 */
     public function __construct() {
         add_action( 'init', array( $this, 'shortcodes_init' ) );
-        add_action( 'init', array( $this, 'init' ) );
+        // The priority is 5 because this method should be passed before user datas update (see TFI::ShortcodeManager::user_init)
+        add_action( 'init', array( $this, 'init' ), 5 );
     }
 
 	/**
@@ -121,6 +122,13 @@ class ShortcodesManager {
             }
 
             $this->campains_manager->set_template_settings( $choosen_campain, $choosen_template );
+
+            // We redirect to avoid page actualization which will insert a new template/campain each time
+            add_action( 'the_post', function() {
+                if ( wp_redirect( get_permalink( get_the_ID() ) ) ) {
+                    exit;
+                }
+            }, 10, 0 );
         }
 
         // Change the file folder of each echo file fields to put them into a campain/template folder
@@ -204,8 +212,8 @@ class ShortcodesManager {
         $o.=                '</label>';
         $o.=            '</th>';
         $o.=            '<td>';
-        $o.=                '<input type="text" placeholder="' . esc_attr__( 'My new campain' ) . '" id="echo-new-campain" name="echo_new_campain">';
-        $o.=                '<input onclick="this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Create and select a new campain' ) . '" />';
+        $o.=                '<input id="echo-new-campain" type="text" placeholder="' . esc_attr__( 'My new campain' ) . '" name="">';
+        $o.=                '<input onclick="document.getElementById(\'echo-new-campain\').setAttribute(\'name\', \'echo_new_campain\'); this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Create and select a new campain' ) . '" />';
         $o.=            '</td>';
         $o.=        '</tr>';
         $o.=        '<tr>';

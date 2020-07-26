@@ -120,11 +120,9 @@ class Campain {
         while ( file_exists( $template_file ) );
         
         require_once ECHO_PATH . 'includes/fields-manager.php';
-        $json = fopen( $template_file, 'w' );
-        fwrite( $json, json_encode( FieldsManager::get_echo_fields() ) );
-        fclose( $json );
 
         $template = new Template( $template_file );
+        $template->update_values( FieldsManager::get_echo_default_values() );
         $this->templates[$template->id] = $template;
 
         return $template;
@@ -156,10 +154,35 @@ class Template {
     public $id;
     public $nice_name;
     public $template_file;
+    private $values;
 
     public function __construct( $template_file ) {
         $this->template_file    = $template_file;
         $this->id               = pathinfo( $template_file, PATHINFO_FILENAME );
         $this->nice_name        = ucfirst( str_replace( '_', ' ', $this->id ) );
+    }
+
+    public function get_values() {
+        if ( ! file_exists( $this->template_file ) ) {
+            return array();
+        }
+
+        if ( $this->values === null ) {
+            $json = fopen( $this->template_file, 'r' );
+            $this->values = json_decode( fread( $json, filesize( $this->template_file ) ), true );
+            fclose( $json );
+        }
+
+        return $this->values;
+    }
+
+    public function update_values( $new_values ) {
+        if ( $new_values !== $this->get_values() ) {
+            $json = fopen( $this->template_file, 'w' );
+            fwrite( $json, json_encode( $new_values ) );
+            fclose( $json );
+
+            $this->values = $new_values;
+        }
     }
 }
