@@ -21,6 +21,13 @@ class FieldsManager {
         return self::$cache['echo_folder'];
     }
 
+    public static function get_echo_folder_for_field( $field_name ) {
+        if ( ! isset( self::$cache['echo_folder'][$field_name] ) ) {
+        }
+
+        return self::$cache['echo_folder'][$field_name];
+    }
+
     public static function get_echo_fields() {
         if ( ! array_key_exists( 'echo_fields', self::$cache ) ) {
             self::$cache['echo_fields'] = array(
@@ -29,8 +36,8 @@ class FieldsManager {
                     'type' => 'image',
                     'default' => '',
                     'users' => array( 'default_type' ),
-                    'folder' => self::get_echo_folder(),
                     'special_params' => array(
+                        'folder' => self::get_echo_folder(),
                         'width' => 1080,
                         'height' => 1920
                     )
@@ -40,8 +47,8 @@ class FieldsManager {
                     'type' => 'image',
                     'default' => '',
                     'users' => array( 'default_type' ),
-                    'folder' => self::get_echo_folder(),
                     'special_params' => array(
+                        'folder' => self::get_echo_folder(),
                         'width' => 1080,
                         'height' => 1920
                     )
@@ -51,16 +58,54 @@ class FieldsManager {
                     'type' => 'multiple',
                     'default' => '',
                     'users' => array( 'default_type' ),
-                    'folder' => self::get_echo_folder(),
                     'special_params' => array(
                         'min_length' => 5,
                         'max_length' => 80,
                         'type' => 'image',
                         'multiple_field_special_params' => array(
-                            'mandatory_domains' => array(
-                                'width' => 716,
-                                'height' => 0
-                            )
+                            'folder' => 'bkdos',
+                            'width' => 716,
+                            'height' => 0
+                        )
+                    )
+                ),
+                'echo_police_color' => array(
+                    'real_name' => __( 'Couleur de la police' ),
+                    'type' => 'color',
+                    'default' => '',
+                    'users' => array( 'default_type' ),
+                    'special_params' => array()
+                ),
+                'echo_police' => array(
+                    'real_name' => __( 'Police utilisée' ),
+                    'type' => 'text',
+                    'default' => '',
+                    'users' => array( 'default_type' ),
+                    'special_params' => array()
+                ),
+                'echo_minimum_police_size' => array(
+                    'real_name' => __( 'Taille minimum de la police (en pt)' ),
+                    'type' => 'number',
+                    'default' => '',
+                    'users' => array( 'default_type' ),
+                    'special_params' => array(
+                        'min' => 5,
+                        'max' => 50
+                    )
+                ),
+                'echo_number' => array(
+                    'real_name' => __( 'Nombre' ),
+                    'type' => 'multiple',
+                    'default' => '',
+                    'users' => array( 'default_type' ),
+                    'special_params' => array(
+                        'min_length' => 10,
+                        'max_length' => 10,
+                        'type' => 'image',
+                        'multiple_field_special_params' => array(
+                            'folder' => 'numbers',
+                            'width' => 100,
+                            'height' => 100
                         )
                     )
                 )
@@ -74,30 +119,12 @@ class FieldsManager {
         return array_keys( self::get_echo_fields() );
     }
 
-    public static function get_user_datas( $user_id ) {
-        if ( ! array_key_exists( 'user_db_data', self::$cache ) ) {
-            global $wpdb;
-    
-            $result = $wpdb->get_var( "SELECT datas FROM " . $wpdb->prefix . TFI_TABLE . " WHERE user_id = " . $this->id );
-            
-            // If the result is null, it means that there is no user_id with this id in the database
-            if ( $result === null ) {
-                self::$cache['user_db_data'][$user_id] = array();
-            }
-            else {
-                self::$cache['user_db_data'][$user_id] = maybe_unserialize( $result );
-            }
-        }
-
-        return self::$cache['user_db_data'][$user_id];
-    }
-
     public static function get_echo_field_objects() {
         if ( ! isset( self::$cache['echo_field_objects'] ) ) {
             require_once TFI_PATH . 'includes/field.php';
 
             foreach ( self::get_echo_fields() as $field_name => $field_datas ) {
-                self::$cache['echo_field_objects'][] = new \TFI\Field( $field_name, $field_datas['real_name'], $field_datas['default'], $field_datas['type'], $field_datas['special_params'] );
+                self::$cache['echo_field_objects'][$field_name] = new \TFI\Field( $field_name, $field_datas['real_name'], $field_datas['default'], $field_datas['type'], $field_datas['special_params'] );
             }
         }
 

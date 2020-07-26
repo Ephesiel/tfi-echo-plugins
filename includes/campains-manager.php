@@ -75,15 +75,13 @@ class CampainsManager {
         if ( $user->is_ok() ) {
             $this->user = $user;
             $this->new_template_setting = false;
-            add_action( 'tfi_user_datas_changed', array( $this, 'on_datas_changed' ), 10, 2 );
 
-            // Change the file folder of each echo file fields to put them into a campain/template folder
             require_once ECHO_PATH . 'includes/fields-manager.php';
-            foreach ( FieldsManager::get_echo_field_objects() as $field ) {
-                if ( $field->is_file() ) {
-                    add_filter( 'tfi_field_file_path_' . $field->name, array( $this, 'update_echo_data' ) );
-                }
-            }
+
+            // Send values in sftp to the echo server
+            add_action( 'tfi_user_datas_changed', array( $this, 'on_datas_changed' ), 10, 2 );
+            // Change the file folder of each echo file fields to put them into a campain/template folder
+            add_filter( 'tfi_field_file_path', array( $this, 'update_echo_data' ), 10, 3 );
         }
     }
 
@@ -95,13 +93,10 @@ class CampainsManager {
      * @since 1.0.0
      * @access private
      * 
-     * @param \TFI\User $user   This user should be the same that the one inside this class
+     * @param \TFI\User $user   Current user (same than $this->user)
      * @param array     $fields Contains all fields which changed
      */
     public function on_datas_changed( $user, $fields ) {
-        if ( $user->id !== $this->user->id ) {
-            return;
-        }
         /**
          * If the update is due to a template settings changement, we don't want to rewrite the template file
          */
@@ -110,19 +105,42 @@ class CampainsManager {
             return;
         }
 
-        require_once ECHO_PATH . 'includes/fields-manager.php';
-
-        $template    = $this->get_template_settings()['template'];
-        $echo_fields = FieldsManager::get_echo_fields_name();
-        $values      = $template->get_values();
+        $campain            = $this->get_template_settings()['campain'];
+        $template           = $this->get_template_settings()['template'];
+        $echo_fields        = FieldsManager::get_echo_fields_name();
+        $values             = $template->get_values();
+        $updated_files      = array();
+        $non_file_values    = null;
+        $non_file_updated   = false;
 
         foreach ( $fields as $field ) {
             if ( in_array( $field->name, $echo_fields ) ) {
-                $values[$field->name] = $field->get_value_for_user( $user, 'upload_path' );
+                $value = $field->get_value_for_user( $user, 'upload_path' );
+                $values[$field->name] = $value;
+
+                if ( $field->is_multiple_file() ) {
+                    $updated_files[$field->name] = $value;
+                }
+                else {
+                    $non_file_updated = true;
+                    $non_file_values  = array();
+                }
+            }
+        }
+
+        if ( $non_file_updated ) {
+            foreach ( $template->get_values() as $field_name => $value ) {
+                if ( ! FieldsManager::get_echo_field_objects()[$field_name]->is_multiple_file() ) {
+                    $non_file_values[$field_name] = $value;
+                }
             }
         }
 
         $template->update_values( $values );
+        
+        require_once ECHO_PATH . 'includes/ftp-manager.php';
+        $ftp_manager = new FtpManager;
+        $ftp_manager->push_echo_datas( $this->user, $campain, $template, $updated_files, $non_file_values );
     }
 
     /**
@@ -136,14 +154,30 @@ class CampainsManager {
      * @since 1.0.0
      * @access public
      * 
-     * @param string $value     The path of the folder which will be modify
-     * @return string           The new path for the file
+     * @param string        $value      The path of the folder which will be modify
+     * @param \TFI\User     $user       Current user (same than $this->user)
+     * @param \TFI\Field    $field      The path of the folder which will be modify
+     * @return string                   The new path for the file
      */
-    public function update_echo_data( $value ) {
+    public function update_echo_data( $value, $user, $field ) {
+        $parent = $field->get_oldest_parent();
+        if ( ! in_array( $parent->name, FieldsManager::get_echo_fields_name() ) || ! FieldsManager::get_echo_field_objects()[$parent->name]->is_multiple_file() ) {
+            return $value;
+        }
+
         $settings       = $this->get_template_settings();
         $echo_folder    = tfi_get_user_file_folder_path( $this->user->id, 'echo', false );
         $new_folder     = $echo_folder . '/' . $settings['campain']->id . '/' . $settings['template']->id;
-        $new_value      = $new_folder . substr( $value, strlen( $echo_folder ) );
+        $new_value;
+
+        if ( is_array( $value ) ) {
+            foreach ( $value as $key => $subvalue ) {
+                $new_value[$key] = $new_folder . substr( $subvalue, strlen( $echo_folder ) );
+            }
+        }
+        else {
+            $new_value = $new_folder . substr( $value, strlen( $echo_folder ) );
+        }
         
         return $new_value;
     }

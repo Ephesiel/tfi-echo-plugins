@@ -155,6 +155,7 @@ class Template {
     public $nice_name;
     public $template_file;
     private $values;
+    private $json;
 
     public function __construct( $template_file ) {
         $this->template_file    = $template_file;
@@ -168,9 +169,10 @@ class Template {
         }
 
         if ( $this->values === null ) {
-            $json = fopen( $this->template_file, 'r' );
-            $this->values = json_decode( fread( $json, filesize( $this->template_file ) ), true );
-            fclose( $json );
+            $json_file      = fopen( $this->template_file, 'r' );
+            $this->json     = fread( $json_file, filesize( $this->template_file ) );
+            $this->values   = json_decode( $this->json , true );
+            fclose( $json_file );
         }
 
         return $this->values;
@@ -178,11 +180,20 @@ class Template {
 
     public function update_values( $new_values ) {
         if ( $new_values !== $this->get_values() ) {
-            $json = fopen( $this->template_file, 'w' );
-            fwrite( $json, json_encode( $new_values ) );
-            fclose( $json );
+            $json_file      = fopen( $this->template_file, 'w' );
+            $this->values   = $new_values;
+            $this->json     = json_encode( $new_values );
+            fwrite( $json_file, $this->json );
+            fclose( $json_file );
 
-            $this->values = $new_values;
         }
+    }
+
+    public function get_json() {
+        if ( $this->json === null ) {
+            $this->get_values();
+        }
+
+        return $this->json;
     }
 }
