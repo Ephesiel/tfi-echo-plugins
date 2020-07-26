@@ -130,14 +130,6 @@ class ShortcodesManager {
                 }
             }, 10, 0 );
         }
-
-        // Change the file folder of each echo file fields to put them into a campain/template folder
-        require_once ECHO_PATH . 'includes/fields-manager.php';
-        foreach ( FieldsManager::get_echo_field_objects() as $field ) {
-            if ( $field->is_file() ) {
-                add_filter( 'tfi_field_file_path_' . $field->name, array( $this, 'update_echo_data' ) );
-            }
-        }
     }
 
     /**
@@ -237,28 +229,5 @@ class ShortcodesManager {
         $o.= '</form>';
 
         return $o;
-    }
-
-    /**
-     * Update_echo_data.
-     * 
-     * This method is connected with the tfi_field_file_path_$fieldname hook and is called for every echo field.
-     * It will return the value of the path according to the choosen templates.
-     * It will allows to have multiple echo image for the same field !
-     * The new path will be user_name/echo/campain/template/...
-     * 
-     * @since 1.0.0
-     * @access public
-     * 
-     * @param string $value     The path of the folder which will be modify
-     * @return string           The new path for the file
-     */
-    public function update_echo_data( $value ) {
-        $settings       = $this->campains_manager->get_template_settings();
-        $echo_folder    = tfi_get_user_file_folder_path( $this->user->id, 'echo', false );
-        $new_folder     = $echo_folder . '/' . $settings['campain']->id . '/' . $settings['template']->id;
-        $new_value      = $new_folder . substr( $value, strlen( $echo_folder ) );
-        
-        return $new_value;
     }
 }
