@@ -138,9 +138,14 @@ class CampainsManager {
 
         $template->update_values( $values );
         
-        require_once ECHO_PATH . 'includes/ftp-manager.php';
-        $ftp_manager = new FtpManager;
-        $ftp_manager->push_echo_datas( $this->user, $campain, $template, $updated_files, $non_file_values );
+        /**
+         * Only send datas if something changed
+         */
+        if ( ! empty( $updated_files ) || $non_file_values !== null ) {
+            require_once ECHO_PATH . 'includes/ftp-manager.php';
+            $ftp_manager = new FtpManager;
+            $ftp_manager->push_echo_datas( $this->user, $campain, $template, $updated_files, $non_file_values );
+        }
     }
 
     /**
