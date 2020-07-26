@@ -68,7 +68,7 @@ class CampainsManager {
     /**
      * Set_template_settings.
      * 
-     * This method will update the database to store which template is the last updated by the user
+     * This method will update the database to store which template is the last choosen by the user
      * 
      * @since 1.0.0
      * @access public
@@ -83,34 +83,28 @@ class CampainsManager {
 			return;
         }
 
+        // No need to update the database if the values are the same
+        if ( $this->template_settings !== null ) {
+            if ( $this->template_settings['campain']->id === $campain->id && $this->template_settings['template']->id === $template->id ) {
+                return;
+            }
+        }
+
         global $wpdb;
+        $table = $wpdb->prefix . ECHO_TABLE;
 
-        $values = maybe_serialize(  array(
-            'campain_id' => $campain->id,
-            'template_id' => $template->id
-        ) );
-
-        $wpdb->query( "INSERT INTO " . $wpdb->prefix . ECHO_TABLE . " (user_id, datas) VALUES (" . $this->user->id . ", '" . $values . "') ON DUPLICATE KEY UPDATE datas = VALUES(datas);" );
+        $wpdb->query(
+            "INSERT INTO {$table} (user_id, campain_id, template_id)
+                VALUES ({$this->user->id}, '{$campain->id}', '{$template->id}')
+                ON DUPLICATE KEY UPDATE
+                    campain_id = VALUES(campain_id),
+                    template_id = VALUES(template_id);"
+        );
 
         $this->template_settings = array(
             'campain' => $campain,
             'template' => $template
         );
-    }
-
-    /**
-     * Set_default_template_settings.
-     * 
-     * This is equivalent to the method set_template_settings but with the default settings.
-     * 
-     * @since 1.0.0
-     * @access public
-     */
-    public function set_default_template_settings() {
-        $default_campain = $this->get_default_campain();
-        $default_template = $this->get_default_template_for_campain( $default_campain );
-
-        $this->set_template_settings( $default_campain, $default_template );
     }
 
     /**
@@ -134,82 +128,36 @@ class CampainsManager {
 
         if ( $this->template_settings === null ) {
             global $wpdb;
+            $table = $wpdb->prefix . ECHO_TABLE;
     
-            $result = $wpdb->get_var( "SELECT datas FROM " . $wpdb->prefix . ECHO_TABLE . " WHERE user_id = " . $this->user->id );
-            
-            // If the result is null, it means that there is no user_id with this id in the database
-            if ( $result === null ) {
-                $this->set_default_template_settings();
-            }
-            else {
-                $result = maybe_unserialize( $result );
-                $campain = $this->get_campain( $result['campain_id'] );
+            $result = $wpdb->get_row( "SELECT campain_id, template_id FROM {$table} WHERE user_id = {$this->user->id}" );
 
-                // The campain and the template can be false if they have been deleted but not replace in the ddb.
-                if ( $campain !== false ) {
-                    $template = $campain->get_template( $result['template_id'] );
-                    if ( $template !== false ) {
-                        $this->template_settings = array(
-                            'campain' => $campain,
-                            'template' => $template
-                        );
-                    }
-                    else {
-                        $this->set_default_template_settings();
-                    }
-                }
-                else {
-                    $this->set_default_template_settings();
-                }
+            $campain = false;
+            $template = false;
+
+            // We try to get the campain
+            if ( $result !== null ) {
+                $campain = $this->get_campain( $result->campain_id );
             }
+
+            // If the campain doesn't exist, get the default one
+            if ( $campain === false ) {
+                $campain = $this->get_default_campain();
+            }
+            // Only get the template if this is the not the default campain
+            else if ( $result !== null ) {
+                $template = $campain->get_template( $result->template_id );
+            }
+
+            // If the template is stille false, we get the default one
+            if ( $template === false ) {
+                $template = $campain->get_default_template();
+            }
+
+            $this->set_template_settings( $campain, $template );
         }
 
         return $this->template_settings;
-    }
-
-    /**
-     * Get_default_campain.
-     * 
-     * Return the campain by default for this user
-     * 
-     * @since 1.0.0
-     * @access public
-     * 
-     * @return Campain  The default campain
-     */
-    public function get_default_campain() {
-        $campains = $this->get_campains();
-        
-        // Create a new campain name default if this user has no campain
-        if ( empty( $campains ) ) {
-            return $this->create_campain( 'default' );
-        }
-
-        // Or choose the first one
-        return array_values( $campains )[0];
-    }
-
-    /**
-     * Get_default_template_for_campain.
-     * 
-     * Return the template by default for the selected campain
-     * 
-     * @since 1.0.0
-     * @access public
-     * 
-     * @param Campain $campain  The campain to get the default template from
-     * @return Template         The default template
-     */
-    public function get_default_template_for_campain( $campain ) {
-        $templates = $campain->get_templates();
-            
-        // Create a new template if this user has no template for this campain
-        if ( empty( $templates ) ) {
-            return $campain->new_template();
-        }
-
-        // Or choose the first one
-        return array_values( $templates )[0];
     }
 
 	/**
@@ -267,6 +215,28 @@ class CampainsManager {
 
 		return false;
 	}
+
+    /**
+     * Get_default_campain.
+     * 
+     * Return the campain by default for this user
+     * 
+     * @since 1.0.0
+     * @access public
+     * 
+     * @return Campain  The default campain
+     */
+    public function get_default_campain() {
+        $campains = $this->get_campains();
+        
+        // Create a new campain name default if this user has no campain
+        if ( empty( $campains ) ) {
+            return $this->create_campain( 'default' );
+        }
+
+        // Or choose the first one
+        return array_values( $campains )[0];
+    }
 
 	/**
 	 * Create_campain.
@@ -344,5 +314,5 @@ class CampainsManager {
 		}
 
 		return ECHO_CAMPAIN_FOLDER_DIR . $wp_user->user_nicename . '/';
-	}
+    }
 }

@@ -57,7 +57,7 @@ class FieldsManager {
     }
 
     public static function get_user_datas( $user_id ) {
-        if ( ! isset( self::$cache['user_db_data'][$user_id] ) ) {
+        if ( ! array_key_exists( 'user_db_data', self::$cache ) ) {
             global $wpdb;
     
             $result = $wpdb->get_var( "SELECT datas FROM " . $wpdb->prefix . TFI_TABLE . " WHERE user_id = " . $this->id );
@@ -72,5 +72,17 @@ class FieldsManager {
         }
 
         return self::$cache['user_db_data'][$user_id];
-    } 
+    }
+
+    public static function get_echo_field_objects() {
+        if ( ! isset( self::$cache['echo_field_objects'] ) ) {
+            require_once TFI_PATH . 'includes/field.php';
+
+            foreach ( self::get_echo_fields() as $field_name => $field_datas ) {
+                self::$cache['echo_field_objects'][] = new \TFI\Field( $field_name, $field_datas['real_name'], $field_datas['default'], $field_datas['type'], $field_datas['special_params'] );
+            }
+        }
+
+        return self::$cache['echo_field_objects'];
+    }
 }

@@ -15,6 +15,7 @@ class Campain {
 	public $nice_name;
 	public $campain_dir;
 	private $templates;
+	private $template_settings;
 
     /**
      * Campain constructor
@@ -42,45 +43,17 @@ class Campain {
 	 */
 	public function get_templates() {
 		if ( $this->templates === null ) {
-			$folders = glob( $this->campain_dir . '/*', GLOB_ONLYDIR );
+			$files = glob( $this->campain_dir . '/*.json' );
 			$this->templates = array();
 
-			foreach ( $folders as $folder ) {
-                $template = new Template( $folder );
+			foreach ( $files as $file ) {
+                $template = new Template( $file );
 				$this->templates[$template->id] = $template;
 			}
         }
 
 		return $this->templates;
 	}
-
-    /**
-     * New_template.
-     * 
-     * Create a new template for this campain.
-     * 
-     * @since 1.0.0
-     * @access public
-     * 
-     * @return Template The new template
-     */
-	public function new_template() {
-        $template_dir;
-        $counter = 1;
-
-        do {
-            $template_dir = $this->campain_dir . '/template_' . $counter . '/';
-            $counter++;
-        }
-        while ( file_exists( $template_dir ) );
-        
-        wp_mkdir_p( $template_dir );
-
-        $template = new Template( $template_dir );
-        $this->templates[$template->id] = $template;
-
-        return $template;
-    }
 
 	/**
 	 * Get_template.
@@ -103,6 +76,59 @@ class Campain {
 
 		return false;
 	}
+
+    /**
+     * Get_default_template.
+     * 
+     * Return the template by default for the selected campain
+     * 
+     * @since 1.0.0
+     * @access public
+     * 
+     * @return Template         The default template
+     */
+    public function get_default_template() {
+        $templates = $this->get_templates();
+            
+        // Create a new template if this user has no template for this campain
+        if ( empty( $templates ) ) {
+            return $this->new_template();
+        }
+
+        // Or choose the first one
+        return array_values( $templates )[0];
+    }
+
+    /**
+     * New_template.
+     * 
+     * Create a new template for this campain.
+     * 
+     * @since 1.0.0
+     * @access public
+     * 
+     * @return Template The new template
+     */
+	public function new_template() {
+        $template_file;
+        $counter = 1;
+
+        do {
+            $template_file = $this->campain_dir . '/template_' . $counter . '.json';
+            $counter++;
+        }
+        while ( file_exists( $template_file ) );
+        
+        require_once ECHO_PATH . 'includes/fields-manager.php';
+        $json = fopen( $template_file, 'w' );
+        fwrite( $json, json_encode( FieldsManager::get_echo_fields() ) );
+        fclose( $json );
+
+        $template = new Template( $template_file );
+        $this->templates[$template->id] = $template;
+
+        return $template;
+    }
     
     /**
      * Delete_template.
@@ -117,7 +143,7 @@ class Campain {
      */
     public function delete_template( $template_id ) {
         if ( array_key_exists( $template_id, $this->get_templates() ) ) {
-            tfi_delete_files( $this->templates[$template_id]->template_dir );
+            tfi_delete_files( $this->templates[$template_id]->template_file );
             unset( $this->templates[$template_id] );
         }
     }
@@ -129,11 +155,11 @@ class Campain {
 class Template {
     public $id;
     public $nice_name;
-    public $template_dir;
+    public $template_file;
 
-    public function __construct( $template_dir ) {
-        $this->template_dir = $template_dir;
-        $this->id           = pathinfo( $template_dir, PATHINFO_FILENAME );
-        $this->nice_name    = ucfirst( str_replace( '_', ' ', $this->id ) );
+    public function __construct( $template_file ) {
+        $this->template_file    = $template_file;
+        $this->id               = pathinfo( $template_file, PATHINFO_FILENAME );
+        $this->nice_name        = ucfirst( str_replace( '_', ' ', $this->id ) );
     }
 }

@@ -56,7 +56,8 @@ class InstallManager {
         $sql = "CREATE TABLE " . $wpdb->prefix . ECHO_TABLE . " (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             user_id int(11) NOT NULL UNIQUE,
-            datas longtext NOT NULL,
+            campain_id varchar(255) NOT NULL,
+            template_id varchar(255) NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate";
         

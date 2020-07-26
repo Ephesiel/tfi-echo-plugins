@@ -94,14 +94,10 @@ class ShortcodesManager {
 
         // If the user want to create a new campain, we select it
         if ( isset( $_GET['echo_new_campain'] ) && ! empty( $_GET['echo_new_campain'] ) ) {
-            $choosen_campain  = $this->campains_manager->create_campain( $_GET['echo_new_campain'] );
-
-            // We did this because echo_new_template cannot be in get keys in the same time than echo_new_campain
-            // So we need a first template to be able to set_template settings and so, select the new campain when created
-            $choosen_template = $choosen_campain->new_template();
+            $choosen_campain = $this->campains_manager->create_campain( $_GET['echo_new_campain'] );
         }
 
-        // If the campain is not null (no value pass in get) and not false (the value pass is not valid), we can try to get the template
+        // If the campain is not null (no value pass in get) and not false (the value pass is not valid), we can select the template
         if ( $choosen_campain !== null && $choosen_campain !== false ) {
 
             // If the user want to delete a template
@@ -115,22 +111,24 @@ class ShortcodesManager {
             }
     
             // If the user want to create a new template, we select it
-            if ( isset( $_GET['echo_new_template'] ) && ! empty( $_GET['echo_new_template'] ) ) {
+            if ( isset( $_GET['echo_new_template'] ) ) {
                 $choosen_template = $choosen_campain->new_template();
             }
-    
-            // If the template is not null (no value pass in get) and not false (the value pass is not valid) we can set template settings
-            if ( $choosen_template !== null && $choosen_template !== false ) {
 
-                // Set the user choice into database
-                $this->campains_manager->set_template_settings( $choosen_campain, $choosen_template );
+            // If the template is null (no value pass in get) or false (the value pass is not valid), we get the default one
+            if ( $choosen_template === null || $choosen_template === false ) {
+                $choosen_template = $choosen_campain->get_default_template();
             }
+
+            $this->campains_manager->set_template_settings( $choosen_campain, $choosen_template );
         }
 
         // Change the file folder of each echo file fields to put them into a campain/template folder
         require_once ECHO_PATH . 'includes/fields-manager.php';
-        foreach ( FieldsManager::get_echo_fields_name() as $field_name ) {
-            add_filter( 'tfi_field_file_path_' . $field_name, array( $this, 'update_echo_data' ) );
+        foreach ( FieldsManager::get_echo_field_objects() as $field ) {
+            if ( $field->is_file() ) {
+                add_filter( 'tfi_field_file_path_' . $field->name, array( $this, 'update_echo_data' ) );
+            }
         }
     }
 
@@ -222,8 +220,8 @@ class ShortcodesManager {
         $o.=                    '<option value="' . $template->id . '" ' . ( $template->id === $choosen_template->id ? ' selected' : '' ) . '>' . $template->nice_name . '</option>';
         }
         $o.=                '</select>';
-        $o.=                '<input id="echo-new-template" type="hidden" name="echo_new_template" value="" />';
-        $o.=                '<input onclick="document.getElementById(\'echo-new-template\').setAttribute(\'value\', \'1\'); this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Create and select a new empty template' ) . '" />';
+        $o.=                '<input disabled id="echo-new-template" type="hidden" name="echo_new_template" />';
+        $o.=                '<input onclick="document.getElementById(\'echo-new-template\').removeAttribute(\'disabled\'); this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Create and select a new empty template' ) . '" />';
         $o.=                '<input onclick="document.getElementById(\'echo-template-select\').setAttribute(\'name\', \'echo_template_to_delete\'); this.form.submit()" type="button" class="submit-button" value="' . esc_attr__( 'Delete this template' ) . '" />';
         $o.=            '</td>';
         $o.=        '</tr>';
