@@ -97,7 +97,7 @@ class FieldsManager {
         if ( ! array_key_exists( 'echo_fields_option', self::$cache ) ) {
             self::$cache['echo_fields_option'] = array(
                 'echo_background' => array(
-                    'real_name' => __( 'Arrière-plan' ),
+                    'real_name' => 'Arrière-plan',
                     'type' => 'image',
                     'default' => '',
                     'admin_visible' => false,
@@ -109,7 +109,7 @@ class FieldsManager {
                     )
                 ),
                 'echo_menu-background' => array(
-                    'real_name' => __( 'Menu Background' ),
+                    'real_name' => 'Menu Background',
                     'type' => 'image',
                     'default' => '',
                     'admin_visible' => false,
@@ -118,6 +118,198 @@ class FieldsManager {
                         'folder' => self::get_echo_parent_folder(),
                         'width' => 1080,
                         'height' => 1920
+                    )
+                ),
+                'echo_game-logo' => array(
+                    'real_name' => 'Logo Personnalisé',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 864,
+                        'height' => 0
+                    )
+                ),
+                'echo_loading-screen' => array(
+                    'real_name' => 'Ecran de chargement',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 1080,
+                        'height' => 1920
+                    )
+                ),
+                'echo_padlock' => array(
+                    'real_name' => 'Cadenas',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_sponsor' => array(
+                    'real_name' => 'Sponsor',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 650,
+                        'height' => 200
+                    )
+                ),
+                'echo_transparent-square' => array(
+                    'real_name' => 'Carré transparent',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_select' => array(
+                    'real_name' => 'Sélection du skin',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => self::get_echo_parent_folder(),
+                        'width' => 716,
+                        'height' => 0
+                    )
+                ),
+                'echo_laser' => array(
+                    'real_name' => 'Laser',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'actors',
+                        'width' => 12,
+                        'height' => 120
+                    )
+                ),
+                'echo_joker' => array(
+                    'real_name' => 'Item Joker',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'actors',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_bonus' => array(
+                    'real_name' => 'Bonus',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_red' => array(
+                    'real_name' => 'Bloc d\'obstruction n°1 (rouge)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_yellow' => array(
+                    'real_name' => 'Bloc d\'obstruction n°2 (jaune)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_green' => array(
+                    'real_name' => 'Bloc d\'obstruction n°3 (vert)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_special' => array(
+                    'real_name' => 'Bloc d\'obstruction n°4 (spécial)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_target' => array(
+                    'real_name' => 'Cible',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_wall' => array(
+                    'real_name' => 'Mur',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'motionless',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_bomb' => array(
+                    'real_name' => 'Item Bombe',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 200
                     )
                 ),
                 'echo_bon-kdo' => array(
@@ -138,7 +330,7 @@ class FieldsManager {
                     )
                 ),
                 'echo_police_color' => array(
-                    'real_name' => __( 'Couleur de la police' ),
+                    'real_name' => 'Couleur de la police',
                     'type' => 'color',
                     'default' => '',
                     'admin_visible' => false,
@@ -146,7 +338,7 @@ class FieldsManager {
                     'special_params' => array()
                 ),
                 'echo_police' => array(
-                    'real_name' => __( 'Police utilisée' ),
+                    'real_name' => 'Police utilisée',
                     'type' => 'text',
                     'default' => '',
                     'admin_visible' => false,
@@ -154,7 +346,7 @@ class FieldsManager {
                     'special_params' => array()
                 ),
                 'echo_minimum_police_size' => array(
-                    'real_name' => __( 'Taille minimum de la police (en pt)' ),
+                    'real_name' => 'Taille minimum de la police (en pt)',
                     'type' => 'number',
                     'default' => '',
                     'admin_visible' => false,
@@ -165,7 +357,7 @@ class FieldsManager {
                     )
                 ),
                 'echo_number' => array(
-                    'real_name' => __( 'Nombre' ),
+                    'real_name' => 'Nombre',
                     'type' => 'multiple',
                     'default' => '',
                     'admin_visible' => false,
@@ -178,22 +370,6 @@ class FieldsManager {
                             'folder' => 'numbers',
                             'width' => 100,
                             'height' => 100
-                        )
-                    )
-                ),
-                'echo_test' => array(
-                    'real_name' => __( 'Echo test' ),
-                    'type' => 'multiple',
-                    'default' => '',
-                    'admin_visible' => true,
-                    'users' => self::get_echo_user_types(),
-                    'special_params' => array(
-                        'min_length' => 10,
-                        'max_length' => 10,
-                        'type' => 'number',
-                        'multiple_field_special_params' => array(
-                            'min' => 0,
-                            'max' => -1
                         )
                     )
                 )

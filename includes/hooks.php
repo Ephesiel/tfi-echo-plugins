@@ -37,6 +37,17 @@ class HooksManager {
 
     public function add_echo_fields( $fields ) {
         require_once ECHO_PATH . 'includes/fields-manager.php';
-        return array_merge( $fields, FieldsManager::get_echo_fields_option_array() );
+
+        /**
+         * This is equivalent to array_merge except that it assure echo fields will be in the wanted order.
+         */
+        foreach ( FieldsManager::get_echo_fields_option_array() as $field_name => $field ) {
+            if ( array_key_exists( $field_name, $fields ) ) {
+                unset( $fields[$field_name] );
+            }
+            $fields[$field_name] = $field;
+        }
+
+        return $fields;
     }
 }

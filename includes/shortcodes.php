@@ -150,7 +150,7 @@ class ShortcodesManager {
         require_once ECHO_PATH . 'includes/fields-manager.php';
         $fields = implode( ',', Fieldsmanager::get_echo_field_names() );
 
-        $shortcode = '[tfi_user_form fields="' . $fields . '"';
+        $shortcode = '[tfi_user_form invisible_fields="1" fields="' . $fields . '"';
         if ( isset( $atts['preview'] ) ) {
             $shortcode .= ' preview="' . $atts['preview'] . '"';
         }
