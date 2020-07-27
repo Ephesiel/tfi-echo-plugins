@@ -25,8 +25,24 @@ class UninstallManager {
      * @access public 
      */
     public function __construct() {
+        $this->delete_options();
         $this->drop_table();
         $this->delete_upload_dir();
+    }
+
+    /**
+     * Delete_options.
+     * 
+     * Just delete all echo options.
+     * 
+     * @since 1.0.0
+     * @access private
+     */
+    private function delete_options() {
+        require_once ECHO_PATH . 'includes/options.php';
+
+        $option_manager = new OptionsManager;
+        $option_manager->delete_options();
     }
     
     /**

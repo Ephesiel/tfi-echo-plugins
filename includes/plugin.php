@@ -39,8 +39,14 @@ class Plugin {
         return self::$instance;
     }
 	
+	private function addHooksManager() {
+        require_once ECHO_PATH . 'includes/hooks.php';
+
+        HooksManager::instance()->create_hooks();
+	}
+	
 	private function addSortcodesManager() {
-        require ECHO_PATH . 'includes/shortcodes.php';
+        require_once ECHO_PATH . 'includes/shortcodes.php';
 
         new ShortcodesManager();
 	}
@@ -55,6 +61,7 @@ class Plugin {
 	 */
 	private function __construct() {
         if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+			$this->addHooksManager();
         }
         else {
 			$this->addSortcodesManager();
@@ -62,4 +69,4 @@ class Plugin {
 	}
 }
 
-add_action( 'tfi_plugins_loaded', array( 'Echo_\\Plugin', 'instance' ) );
+Plugin::instance();

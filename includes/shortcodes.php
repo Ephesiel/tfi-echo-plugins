@@ -148,7 +148,7 @@ class ShortcodesManager {
         $atts = array_change_key_case( (array)$atts, CASE_LOWER );
 
         require_once ECHO_PATH . 'includes/fields-manager.php';
-        $fields = implode( ',', Fieldsmanager::get_echo_fields_name() );
+        $fields = implode( ',', Fieldsmanager::get_echo_field_names() );
 
         $shortcode = '[tfi_user_form fields="' . $fields . '"';
         if ( isset( $atts['preview'] ) ) {

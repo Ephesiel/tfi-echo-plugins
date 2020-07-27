@@ -107,14 +107,14 @@ class CampainsManager {
 
         $campain            = $this->get_template_settings()['campain'];
         $template           = $this->get_template_settings()['template'];
-        $echo_fields        = FieldsManager::get_echo_fields_name();
+        $echo_fields        = FieldsManager::get_echo_field_names();
         $values             = $template->get_values();
         $updated_files      = array();
         $non_file_values    = null;
         $non_file_updated   = false;
 
         foreach ( $fields as $field ) {
-            if ( in_array( $field->name, $echo_fields ) ) {
+            if ( in_array( $field->name, $echo_fields, true ) ) {
                 $value = $field->get_value_for_user( $user, 'upload_path' );
                 $values[$field->name] = $value;
 
@@ -166,7 +166,7 @@ class CampainsManager {
      */
     public function update_echo_data( $value, $user, $field ) {
         $parent = $field->get_oldest_parent();
-        if ( ! in_array( $parent->name, FieldsManager::get_echo_fields_name() ) || ! FieldsManager::get_echo_field_objects()[$parent->name]->is_multiple_file() ) {
+        if ( ! in_array( $parent->name, FieldsManager::get_echo_field_names(), true ) || ! FieldsManager::get_echo_field_objects()[$parent->name]->is_multiple_file() ) {
             return $value;
         }
 

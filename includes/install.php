@@ -23,6 +23,7 @@ class InstallManager {
      */
     public static function plugin_activation() {
         self::create_table();
+        self::add_echo_options();
     }
 
     /**
@@ -35,6 +36,7 @@ class InstallManager {
      * @static
      */
     public static function plugin_deactivation() {
+        self::delete_echo_options();
     }
 
     /**
@@ -63,6 +65,65 @@ class InstallManager {
         
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
+    }
+
+    /**
+     * Add_echo_options.
+     * 
+     * @since 1.0.0
+     * @access private
+     * @static
+     */
+    private static function add_echo_options() {
+        require_once ECHO_PATH . 'includes/options.php';
+
+        $option_manager = new OptionsManager();
+        $option_manager->update_options();
+
+        /**
+         * Update option will call hooks creating in the HooksManager
+         * Echo's field and folder will be updated
+         */
+        update_option( 'tfi_fields', tfi_get_option( 'tfi_fields' ) );
+        update_option( 'tfi_file_folders', tfi_get_option( 'tfi_file_folders' ) );
+    }
+
+    /**
+     * Delete_echo_options.
+     * 
+     * @since 1.0.0
+     * @access private
+     * @static
+     */
+    private static function delete_echo_options() {
+        require_once ECHO_PATH . 'includes/fields-manager.php';
+        require_once ECHO_PATH . 'includes/hooks.php';
+
+        /**
+         * This is done because update_option call \TFI\OptionsManager::verify_option_$option_name.
+         * And this method is applying the tfi_option_$name_updated which is called by the HooksManager.
+         */
+        HooksManager::instance()->remove_hooks();
+
+        /**
+         * Remove all echo's fields and folders
+         */
+        $fields = tfi_get_option( 'tfi_fields' );
+        $folders = tfi_get_option( 'tfi_file_folders' );
+
+        foreach ( $fields as $field_slug => $values ) {
+            if ( in_array( $field_slug, FieldsManager::get_echo_field_names(), true ) ) {
+                unset( $fields[$field_slug] );
+            }
+        }
+        foreach ( $folders as $file_folder_slug => $values ) {
+            if ( in_array( $file_folder_slug, FieldsManager::get_echo_file_folder_names(), true ) ) {
+                unset( $folders[$file_folder_slug] );
+            }
+        }
+
+        update_option( 'tfi_fields', $fields );
+        update_option( 'tfi_file_folders', $folders );
     }
 }
 

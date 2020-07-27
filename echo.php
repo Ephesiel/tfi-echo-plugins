@@ -8,8 +8,6 @@
  * Author URI: http://www.tempusfugit-thegame.com
  */
 
-// add_action( 'update_option_tfi_fields' )
-
 require_once 'constants.php';
 
 /**
