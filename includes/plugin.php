@@ -38,6 +38,12 @@ class Plugin {
         
         return self::$instance;
     }
+
+    private function addAdminOption() {
+        require_once ECHO_PATH . 'includes/admin-panel.php';
+
+        new AdminPanelManager();
+    }
 	
 	private function addHooksManager() {
         require_once ECHO_PATH . 'includes/hooks.php';
@@ -61,6 +67,7 @@ class Plugin {
 	 */
 	private function __construct() {
         if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+            $this->addAdminOption();
 			$this->addHooksManager();
         }
         else {

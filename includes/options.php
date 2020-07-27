@@ -110,7 +110,7 @@ class OptionsManager {
         $new_user_types = array();
 
         foreach ( $user_types as $user_type ) {
-            if ( in_array( $user_type, $tfi_user_types, true ) ) {
+            if ( array_key_exists( $user_type, $tfi_user_types ) ) {
                 $new_user_types[] = $user_type;
             }
         }

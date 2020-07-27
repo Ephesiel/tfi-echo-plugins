@@ -21,12 +21,12 @@ class FieldsManager {
         return self::$cache['echo_folder'];
     }
 
-    public static function get_echo_users() {
-        if ( ! array_key_exists( 'echo_users', self::$cache ) ) {
-            self::$cache['echo_users'] = get_option( 'echo_users', array() );
+    public static function get_echo_user_types() {
+        if ( ! array_key_exists( 'echo_user_types', self::$cache ) ) {
+            self::$cache['echo_user_types'] = get_option( 'echo_user_types', array() );
         }
 
-        return self::$cache['echo_users'];
+        return self::$cache['echo_user_types'];
     }
 
     public static function get_echo_file_folders_option_array() {
@@ -40,52 +40,52 @@ class FieldsManager {
                 'actors' => array(
                     'display_name' => 'actors',
                     'parent' => 'echo',
-                    'admin_visible' => false
+                    'admin_visible' => true
                 ),
                 'motionless' => array(
                     'display_name' => 'motionless',
                     'parent' => 'actors',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'movable' => array(
                     'display_name' => 'movable',
                     'parent' => 'actors',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'backgrounds' => array(
                     'display_name' => 'backgrounds',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'buttons' => array(
                     'display_name' => 'buttons',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'screens' => array(
                     'display_name' => 'screens',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'stars' => array(
                     'display_name' => 'stars',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'anims' => array(
                     'display_name' => 'anims',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'bkdos' => array(
                     'display_name' => 'bkdos',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 ),
                 'numbers' => array(
                     'display_name' => 'numbers',
                     'parent' => 'echo',
-                    'admin_visible' => false 
+                    'admin_visible' => true 
                 )
             );
         }
@@ -100,8 +100,8 @@ class FieldsManager {
                     'real_name' => __( 'Arrière-plan' ),
                     'type' => 'image',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array(
                         'folder' => self::get_echo_parent_folder(),
                         'width' => 1080,
@@ -112,8 +112,8 @@ class FieldsManager {
                     'real_name' => __( 'Menu Background' ),
                     'type' => 'image',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array(
                         'folder' => self::get_echo_parent_folder(),
                         'width' => 1080,
@@ -124,8 +124,8 @@ class FieldsManager {
                     'real_name' => __( 'Bon cadeau' ),
                     'type' => 'multiple',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array(
                         'min_length' => 5,
                         'max_length' => 80,
@@ -141,24 +141,24 @@ class FieldsManager {
                     'real_name' => __( 'Couleur de la police' ),
                     'type' => 'color',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array()
                 ),
                 'echo_police' => array(
                     'real_name' => __( 'Police utilisée' ),
                     'type' => 'text',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array()
                 ),
                 'echo_minimum_police_size' => array(
                     'real_name' => __( 'Taille minimum de la police (en pt)' ),
                     'type' => 'number',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array(
                         'min' => 5,
                         'max' => 50
@@ -168,8 +168,8 @@ class FieldsManager {
                     'real_name' => __( 'Nombre' ),
                     'type' => 'multiple',
                     'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_users(),
+                    'admin_visible' => true,
+                    'users' => self::get_echo_user_types(),
                     'special_params' => array(
                         'min_length' => 10,
                         'max_length' => 10,
