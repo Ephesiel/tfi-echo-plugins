@@ -86,15 +86,7 @@ class AdminPanelManager {
 			'echo-users'
 		);
 		
-		/**
-		 * When the echo_user_types option is changed, it means that new users can have access to echo fields (or cannot access anymore).
-		 * When the tfi_fields option is updated, the tfi_fields_update hook is called, which will return echo fields (see HooksManager::add_echo_fields).
-		 * 
-		 * Those fields, contains in key 'users' all users in the fresh updated option echo_user_types (see FieldsManager::get_echo_fields_option_array).
-		 * 
-		 * @since 1.0.0
-		 */
-		add_action( 'update_option_echo_user_types', function() { update_option( 'tfi_fields', tfi_get_option( 'tfi_fields' ) ); }, 10, 0 );
+		add_action( 'update_option_echo_user_types', array( $this, 'reupdate_tfi_fields' ), 10, 0 );
 	}
 
 	/**
@@ -212,5 +204,20 @@ class AdminPanelManager {
 			</tbody>
 		</table>
 		<?php
+	}
+		
+	/**
+	 * Reupdate_tfi_fields.
+	 * 
+	 * When the echo_user_types option is changed, it means that new users can have access to echo fields (or cannot access anymore).
+	 * When the tfi_fields option is updated, the tfi_fields_update hook is called, which will return echo fields (see HooksManager::add_echo_fields).
+	 * 
+	 * Those fields, contains in key 'users' all users in the fresh updated option echo_user_types (see FieldsManager::get_echo_fields_option_array).
+	 * 
+	 * @since 1.0.0
+	 * @access public
+	 */
+	public function reupdate_tfi_fields() {
+		update_option( 'tfi_fields', tfi_get_option( 'tfi_fields' ) );
 	}
 }

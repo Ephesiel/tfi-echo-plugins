@@ -128,6 +128,8 @@ class CampainsManager {
             }
         }
 
+        $template->update_values( $values );
+
         if ( $non_file_updated ) {
             foreach ( $template->get_values() as $field_name => $value ) {
                 if ( ! FieldsManager::get_echo_field_objects()[$field_name]->is_multiple_file() ) {
@@ -135,8 +137,6 @@ class CampainsManager {
                 }
             }
         }
-
-        $template->update_values( $values );
         
         /**
          * Only send datas if something changed
