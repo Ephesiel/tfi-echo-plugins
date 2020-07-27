@@ -312,14 +312,626 @@ class FieldsManager {
                         'height' => 200
                     )
                 ),
+                'echo_divisor' => array(
+                    'real_name' => 'Miroir Diviseur',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_standardminus' => array(
+                    'real_name' => 'Miroir Antislash',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_standardplus' => array(
+                    'real_name' => 'Miroir Slash',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_teleporter' => array(
+                    'real_name' => 'Miroir Téléporteur',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_player' => array(
+                    'real_name' => 'Joueur (canon)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'movable',
+                        'width' => 200,
+                        'height' => 400
+                    )
+                ),
+                'echo_editor-item-background' => array(
+                    'real_name' => 'Background Item Editeur',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'backgrounds',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_large-popup-bg' => array(
+                    'real_name' => 'Background Large Popup',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'backgrounds',
+                        'width' => 864,
+                        'height' => 1344
+                    )
+                ),
+                'echo_level-item-background' => array(
+                    'real_name' => 'Background Item Level',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'backgrounds',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_little-popup-bg' => array(
+                    'real_name' => 'Background Petit Popup',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'backgrounds',
+                        'width' => 500,
+                        'height' => 384
+                    )
+                ),
+                'echo_back-button' => array(
+                    'real_name' => 'Bouton Retour',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-about' => array(
+                    'real_name' => 'Bouton Menu À Propos',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-basket' => array(
+                    'real_name' => 'Bouton Menu Boutique',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-close' => array(
+                    'real_name' => 'Bouton Fermer',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-custom-template' => array(
+                    'real_name' => 'Bouton Menu Choisir le skin',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-edit' => array(
+                    'real_name' => 'Bouton Menu Editeur de niveau',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-menu-background' => array(
+                    'real_name' => 'Fond pour les boutons du menu',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-menu-background-active' => array(
+                    'real_name' => 'Fond cliqué des boutons du menu',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-rectangle-background' => array(
+                    'real_name' => 'Fond pour les boutons rectangles',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 400,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-rectangle-background-active' => array(
+                    'real_name' => 'Fond cliqué d\'un bouton rectangle',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 400,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-reload' => array(
+                    'real_name' => 'Bouton Menu pour recharger les niveaux',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-settings' => array(
+                    'real_name' => 'Bouton Menu Paramètres',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-square-background' => array(
+                    'real_name' => 'Fond d\'un bouton carré',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-square-background-active' => array(
+                    'real_name' => 'Fond cliqué d\'un bouton carré',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_continue-button' => array(
+                    'real_name' => 'Bouton Continuer',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_load-button' => array(
+                    'real_name' => 'Bouton Charger',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_mirrors-background' => array(
+                    'real_name' => 'Fond Miroirs In Game',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_items-background' => array(
+                    'real_name' => 'Fond Items In Game',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_next-button' => array(
+                    'real_name' => 'Bouton Page Suivante',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_previous-button' => array(
+                    'real_name' => 'Bouton Page Précédente',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_quit-button' => array(
+                    'real_name' => 'Bouton Quitter sur le menu pause',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_button-quit' => array(
+                    'real_name' => 'Bouton Quitter sur l\'écran d\'accueil',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_retry-button' => array(
+                    'real_name' => 'Bouton Réessayer sur les écrans in game',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_save-button' => array(
+                    'real_name' => 'Bouton Sauvegarder dans le level editor',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_pause' => array(
+                    'real_name' => 'Bouton pour mettre le jeu en pause',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'buttons',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_defeat-image' => array(
+                    'real_name' => 'Image de défaite',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'screens',
+                        'width' => 417,
+                        'height' => 0
+                    )
+                ),
+                'echo_defeat-screen' => array(
+                    'real_name' => 'Texte de défaite',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'screens',
+                        'width' => 667,
+                        'height' => 0
+                    )
+                ),
+                'echo_pause-screen' => array(
+                    'real_name' => 'Texte de pause',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'screens',
+                        'width' => 667,
+                        'height' => 0
+                    )
+                ),
+                'echo_victory-screen' => array(
+                    'real_name' => 'Texte de victoire',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'screens',
+                        'width' => 667,
+                        'height' => 0
+                    )
+                ),
+                'echo_active-star' => array(
+                    'real_name' => 'Etoile pleine (1)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_inactive-star' => array(
+                    'real_name' => 'Etoile vide (1)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_inactive-level-stars' => array(
+                    'real_name' => 'Etoiles vides (3) sur la sélection des niveaux',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 240,
+                        'height' => 80
+                    )
+                ),
+                'echo_one-active-level-stars' => array(
+                    'real_name' => 'Etoiles vides (2) et étoile pleine (1) sur la sélection des niveaux',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 240,
+                        'height' => 80
+                    )
+                ),
+                'echo_two-active-level-stars' => array(
+                    'real_name' => 'Etoile vide (1) et étoiles pleines (2) sur la sélection des niveaux',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 240,
+                        'height' => 80
+                    )
+                ),
+                'echo_three-active-level-stars' => array(
+                    'real_name' => 'Etoiles pleines (3) sur la sélection des niveaux',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'stars',
+                        'width' => 240,
+                        'height' => 80
+                    )
+                ),
+                'echo_click' => array(
+                    'real_name' => 'Animation au clic de la souris',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 200,
+                        'height' => 200
+                    )
+                ),
+                'echo_colordestroy' => array(
+                    'real_name' => 'Animation à la destruction d\'un bloc d\'obstruction "couleur" sur la map',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 1080,
+                        'height' => 1920
+                    )
+                ),
+                'echo_walldestroy' => array(
+                    'real_name' => 'Animation à la destruction d\'un bloc d\'obstruction "mur" sur la map',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 1080,
+                        'height' => 1920
+                    )
+                ),
+                'echo_bonusgot' => array(
+                    'real_name' => 'Animation à la destruction d\'un bonus sur la map',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 1080,
+                        'height' => 1920
+                    )
+                ),
+                'echo_jokeradd' => array(
+                    'real_name' => 'Animation "+3" sur chaque bloc d\'obstruction "couleur"',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 75,
+                        'height' => 75
+                    )
+                ),
+                'echo_laserlaunch' => array(
+                    'real_name' => 'Animation au lancement du laser par le joueur',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'anims',
+                        'width' => 200,
+                        'height' => 400
+                    )
+                ),
+                'echo_shop' => array(
+                    'real_name' => 'Bouton qui amène vers la boutique (sur le site)',
+                    'type' => 'image',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array(
+                        'folder' => 'bkdos',
+                        'width' => 716,
+                        'height' => 179
+                    )
+                ),
                 'echo_bon-kdo' => array(
-                    'real_name' => __( 'Bon cadeau' ),
+                    'real_name' => 'Bon cadeau',
                     'type' => 'multiple',
                     'default' => '',
                     'admin_visible' => false,
                     'users' => self::get_echo_user_types(),
                     'special_params' => array(
-                        'min_length' => 5,
+                        'min_length' => 0,
                         'max_length' => 80,
                         'type' => 'image',
                         'multiple_field_special_params' => array(

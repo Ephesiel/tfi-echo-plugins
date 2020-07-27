@@ -84,8 +84,8 @@ class InstallManager {
          * Update option will call hooks creating in the HooksManager
          * Echo's field and folder will be updated
          */
-        update_option( 'tfi_fields', tfi_get_option( 'tfi_fields' ) );
         update_option( 'tfi_file_folders', tfi_get_option( 'tfi_file_folders' ) );
+        update_option( 'tfi_fields', tfi_get_option( 'tfi_fields' ) );
     }
 
     /**
