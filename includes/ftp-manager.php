@@ -24,17 +24,16 @@ class FtpManager {
      * @since 1.0.0
      * @access public
      * 
-     * @param \TFI\User $user               The user which push the datas
      * @param Campain   $campain            The campain choose by the user
      * @param Template  $template           The template choose by the user
      * @param array     $new_files          All new files, keys are echo field name and values are the tfi upload directory path for the file. Default array()
      * @param array     $non_file_values    All non file values, keys are echo field name and values are the values. If null is given, nothing will be push. Default null
      */
-    public function push_echo_datas( $user, $campain, $template, $new_files = array(), $non_file_values = null ) {
-        $template_folder = 'echo/' . get_user_by( 'id', $user->id )->user_nicename . '-' . $user->id . '/' . $campain->id . '/' . $template->id;
+    public function push_echo_datas( $campain, $template, $new_files = array(), $non_file_values = null ) {
+        $template_folder = $this->get_echo_folder( $campain, $template );
 
         if ( $this->connect() ) {
-            foreach ( $this->get_file_to_upload( $new_files, $user ) as $file ) {
+            foreach ( $this->get_file_to_upload( $new_files, $campain->owner ) as $file ) {
                 $src_url = $file['src_file'];
 
                 // Remove the echo_ in front of the name
@@ -45,6 +44,8 @@ class FtpManager {
         
                 // Create the folder first
                 ssh2_sftp_mkdir( $this->sftp, $remote_dir, 0750, true );
+
+                // $remote_url = pathinfo( $src_url, PATHINFO_DIRNAME ) . '/test_' . pathinfo( $src_url, PATHINFO_BASENAME );
 
                 // Copy file content on serveur
                 $res_file = fopen( $remote_url, 'w' );
@@ -75,6 +76,64 @@ class FtpManager {
         }
 
         $this->disconnect();
+    }
+
+    /**
+     * Remove_echo_datas.
+     * 
+     * Remove data inside the echo server
+     * 
+     * @since 1.0.0
+     * @access public
+     * 
+     * @param Campain   $campain    The campain to remove
+     * @param Template  $template   The template to eventually remove too.
+     */
+    public function remove_echo_datas( $campain, $template = null ) {
+        $template_folder = $this->get_echo_folder( $campain, $template );
+
+        if ( $this->connect() ) {
+            $path = 'ssh2.sftp://' . intval( $this->sftp ) . '/' . $template_folder;
+            $test = function( $name ) use ( &$test ) {
+                if ( ! is_file( $name ) ) {
+                    foreach ( scandir ( $name ) as $file ) {
+                        if ( $file !== '.' && $file != '..' ) {
+                            $test( $name . '/' . $file );
+                        }
+                    }
+                    rmdir( $name );
+                }
+                else {
+                    unlink( $name );
+                }
+            };
+            $test( $path );
+        }
+
+        $this->disconnect();
+    }
+
+    /**
+     * Get_echo_folder.
+     * 
+     * Return the folder inside the echo server for this campain and template if given.
+     * 
+     * @since 1.0.0
+     * @access private
+     * 
+     * @param Campain   $campain    The campain for the folder to return
+     * @param Template  $template   If given, the folder returns will include the template
+     * 
+     * @return string   The folder path inside the server
+     */
+    private function get_echo_folder( $campain, $template = null ) {
+        $folder = 'echo/' . get_user_by( 'id', $campain->owner->id )->user_nicename . '-' . $campain->owner->id . '/' . $campain->id;
+
+        if ( $template != null ) {
+            $folder .= '/' . $template->id;
+        }
+
+        return $folder;
     }
 
     /**
@@ -110,7 +169,7 @@ class FtpManager {
                 }
                 else if ( is_string( $file_value ) ) {
                     $folders = explode( '/', $field->get_folder_path_from_user( $user, false ) );
-                    $src = $file_manager->get_file_link( $file_value, true );
+                    $src = $file_manager->get_file_link( $file_value, false );
 
                     // We need to remove the 2 first folders. The first is the user name, and the second is the echo folder.
                     if ( count ( $folders ) >= 2 && ! empty( $src ) ) {
@@ -174,5 +233,6 @@ class FtpManager {
         // Close the connection
         ssh2_exec( $this->conn_id, 'exit' );
         $this->conn_id = null;
+        $this->sftp = null;
     }
 }

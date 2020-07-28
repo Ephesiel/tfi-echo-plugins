@@ -14,6 +14,7 @@ class Campain {
 	public $id;
 	public $nice_name;
 	public $campain_dir;
+	public $owner;
 	private $templates;
 	private $template_settings;
 
@@ -23,12 +24,14 @@ class Campain {
      * @since 1.0.0
      * @access public
      * 
-     * @param string $campain_dir    The directory where files of this campain are uploaded.
+     * @param string    $campain_dir    The directory where files of this campain are uploaded.
+     * @param \TFI\User $owner          The owner of this campain
      */
-	public function __construct( $campain_dir ) {
+	public function __construct( $campain_dir, $owner ) {
         $this->campain_dir  = $campain_dir;
         $this->id           = pathinfo( $campain_dir, PATHINFO_FILENAME );
         $this->nice_name    = ucfirst( str_replace( '_', ' ', $this->id ) );
+        $this->owner        = $owner;
 	}
 
 	/**
@@ -47,7 +50,9 @@ class Campain {
 			$this->templates = array();
 
 			foreach ( $files as $file ) {
-                $template = new Template( $file );
+                $template = new Template( $file, $this );
+                // Reupdate the json to be sure that all echo's field are inside
+                $template->update_values( array_merge( FieldsManager::get_echo_default_values(), $template->get_values() ) );
 				$this->templates[$template->id] = $template;
 			}
         }
@@ -121,7 +126,7 @@ class Campain {
         
         require_once ECHO_PATH . 'includes/fields-manager.php';
 
-        $template = new Template( $template_file );
+        $template = new Template( $template_file, $this );
         $template->update_values( FieldsManager::get_echo_default_values() );
         $this->templates[$template->id] = $template;
 
@@ -141,7 +146,16 @@ class Campain {
      */
     public function delete_template( $template_id ) {
         if ( array_key_exists( $template_id, $this->get_templates() ) ) {
+            // Destroy campain files on echo server
+            require_once ECHO_PATH . 'includes/ftp-manager.php';
+            $ftp_manager = new FtpManager;
+            $ftp_manager->remove_echo_datas( $this, $this->templates[$template_id] );
+
+            // Delete echo file (the template json)
             tfi_delete_files( $this->templates[$template_id]->template_file );
+            // Delete template folder inside the tfi upload dir
+            tfi_delete_files( CampainsManager::tfi_upload_dir_for_campain( $this, $this->templates[$template_id] ) );
+            // Remove the template from this campain template
             unset( $this->templates[$template_id] );
         }
     }

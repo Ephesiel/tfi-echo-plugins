@@ -144,7 +144,7 @@ class CampainsManager {
         if ( ! empty( $updated_files ) || $non_file_values !== null ) {
             require_once ECHO_PATH . 'includes/ftp-manager.php';
             $ftp_manager = new FtpManager;
-            $ftp_manager->push_echo_datas( $this->user, $campain, $template, $updated_files, $non_file_values );
+            $ftp_manager->push_echo_datas( $campain, $template, $updated_files, $non_file_values );
         }
     }
 
@@ -171,8 +171,8 @@ class CampainsManager {
         }
 
         $settings       = $this->get_template_settings();
-        $echo_folder    = tfi_get_user_file_folder_path( $this->user->id, 'echo', false );
-        $new_folder     = $echo_folder . '/' . $settings['campain']->id . '/' . $settings['template']->id;
+        $echo_folder    = tfi_get_user_file_folder_path( $settings['campain']->owner->id, 'echo', false );
+        $new_folder     = self::tfi_upload_dir_for_campain( $settings['campain'], $settings['template'] );
         $new_value;
 
         if ( is_array( $value ) ) {
@@ -185,6 +185,32 @@ class CampainsManager {
         }
         
         return $new_value;
+    }
+
+    /**
+     * Tfi_upload_dir_for_campain.
+     * 
+     * Return the tfi upload dir where ar stored files of a campain.
+     * 
+     * @since 1.0.0
+     * @access public
+     * @static
+     * 
+     * @param Campain   $campain    The campain to know which directory return
+     * @param Template  $template   If not set to null, this method will return the directory of the template inside the campain dir. Default null 
+     */
+    public static function tfi_upload_dir_for_campain( $campain, $template = null ) {
+        $echo_folder    = tfi_get_user_file_folder_path( $campain->owner->id, 'echo', false );
+        $campain_folder = $echo_folder . '/' . $campain->id;
+        if ( $template !== null ) {
+            // Verification if the template is a good template of this campain.
+            $template = $campain->get_template( $template->id );
+            if ( $template !== false ) {
+                $campain_folder .= '/' . $template->id;
+            }
+        }
+
+        return $campain_folder;
     }
 
     /**
@@ -312,7 +338,7 @@ class CampainsManager {
 			$this->campains = array();
 
 			foreach ( $folders as $folder ) {
-				$campain = new Campain( $folder );
+				$campain = new Campain( $folder, $this->user );
 				$this->campains[$campain->id] = $campain;
 			}
 		}
@@ -395,7 +421,7 @@ class CampainsManager {
 			$dir = $this->campain_user_dir() . $campain_id;
 			wp_mkdir_p( $dir );
 
-			$campain = new Campain( $dir );
+			$campain = new Campain( $dir, $this->user );
 			$this->campains[$campain->id] = $campain;
 		}
 		
@@ -415,7 +441,16 @@ class CampainsManager {
      */
 	public function delete_campain( $campain_id ) {
         if ( array_key_exists( $campain_id, $this->get_campains() ) ) {
+            // Destroy campain files on echo server
+            require_once ECHO_PATH . 'includes/ftp-manager.php';
+            $ftp_manager = new FtpManager;
+            $ftp_manager->remove_echo_datas( $this->campains[$campain_id] );
+
+            // Delete echo folder of this campain
             tfi_delete_files( $this->campains[$campain_id]->campain_dir );
+            // Delete campain folder inside the tfi upload dir
+            tfi_delete_files( self::tfi_upload_dir_for_campain( $this->campains[$campain_id] ) );
+            // Remove the campain from all campains
             unset( $this->campains[$campain_id] );
         }
 	}
