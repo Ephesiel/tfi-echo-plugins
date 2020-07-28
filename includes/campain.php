@@ -151,10 +151,13 @@ class Campain {
             $ftp_manager = new FtpManager;
             $ftp_manager->remove_echo_datas( $this, $this->templates[$template_id] );
 
+            // Delete template folder inside the tfi upload dir
+            require_once TFI_PATH . 'includes/file-manager.php';
+            $file_manager = new \TFI\FileManager;
+            $file_manager->remove_directory( CampainsManager::tfi_upload_dir_for_campain( $this, $this->templates[$template_id] ) );
+
             // Delete echo file (the template json)
             tfi_delete_files( $this->templates[$template_id]->template_file );
-            // Delete template folder inside the tfi upload dir
-            tfi_delete_files( CampainsManager::tfi_upload_dir_for_campain( $this, $this->templates[$template_id] ) );
             // Remove the template from this campain template
             unset( $this->templates[$template_id] );
         }

@@ -94,11 +94,11 @@ class FtpManager {
 
         if ( $this->connect() ) {
             $path = 'ssh2.sftp://' . intval( $this->sftp ) . '/' . $template_folder;
-            $test = function( $name ) use ( &$test ) {
+            $remove_file_recursive = function( $name ) use ( &$remove_file_recursive ) {
                 if ( is_dir( $name ) ) {
                     foreach ( scandir ( $name ) as $file ) {
                         if ( $file !== '.' && $file != '..' ) {
-                            $test( $name . '/' . $file );
+                            $remove_file_recursive( $name . '/' . $file );
                         }
                     }
                     rmdir( $name );
@@ -107,7 +107,7 @@ class FtpManager {
                     unlink( $name );
                 }
             };
-            $test( $path );
+            $remove_file_recursive( $path );
         }
 
         $this->disconnect();

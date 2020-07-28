@@ -446,10 +446,13 @@ class CampainsManager {
             $ftp_manager = new FtpManager;
             $ftp_manager->remove_echo_datas( $this->campains[$campain_id] );
 
+            // Delete campain folder inside the tfi upload dir
+            require_once TFI_PATH . 'includes/file-manager.php';
+            $file_manager = new \TFI\FileManager;
+            $file_manager->remove_directory( self::tfi_upload_dir_for_campain( $this->campains[$campain_id] ) );
+
             // Delete echo folder of this campain
             tfi_delete_files( $this->campains[$campain_id]->campain_dir );
-            // Delete campain folder inside the tfi upload dir
-            tfi_delete_files( self::tfi_upload_dir_for_campain( $this->campains[$campain_id] ) );
             // Remove the campain from all campains
             unset( $this->campains[$campain_id] );
         }
