@@ -95,7 +95,7 @@ class FtpManager {
         if ( $this->connect() ) {
             $path = 'ssh2.sftp://' . intval( $this->sftp ) . '/' . $template_folder;
             $test = function( $name ) use ( &$test ) {
-                if ( ! is_file( $name ) ) {
+                if ( is_dir( $name ) ) {
                     foreach ( scandir ( $name ) as $file ) {
                         if ( $file !== '.' && $file != '..' ) {
                             $test( $name . '/' . $file );
@@ -103,7 +103,7 @@ class FtpManager {
                     }
                     rmdir( $name );
                 }
-                else {
+                else if ( is_file( $name ) ) {
                     unlink( $name );
                 }
             };
