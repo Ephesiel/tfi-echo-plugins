@@ -127,7 +127,7 @@ class FtpManager {
      * @return string   The folder path inside the server
      */
     private function get_echo_folder( $campain, $template = null ) {
-        $folder = 'echo/' . get_user_by( 'id', $campain->owner->id )->user_nicename . '-' . $campain->owner->id . '/' . $campain->id;
+        $folder = 'echo/preprod/' . get_user_by( 'id', $campain->owner->id )->user_nicename . '-' . $campain->owner->id . '/' . $campain->id;
 
         if ( $template != null ) {
             $folder .= '/' . $template->id;
