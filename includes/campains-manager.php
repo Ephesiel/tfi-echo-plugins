@@ -132,7 +132,7 @@ class CampainsManager {
 
         if ( $non_file_updated ) {
             foreach ( $template->get_values() as $field_name => $value ) {
-                if ( ! FieldsManager::get_echo_field_objects()[$field_name]->is_multiple_file() ) {
+                if ( array_key_exists( $field_name, FieldsManager::get_echo_field_objects() ) && ! FieldsManager::get_echo_field_objects()[$field_name]->is_multiple_file() ) {
                     $non_file_values[$field_name] = $value;
                 }
             }
