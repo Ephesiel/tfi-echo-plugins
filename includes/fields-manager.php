@@ -924,31 +924,6 @@ class FieldsManager {
                         'height' => 179
                     )
                 ),
-                'echo_bon-kdo' => array(
-                    'real_name' => 'Bon cadeau',
-                    'type' => 'multiple',
-                    'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_user_types(),
-                    'special_params' => array(
-                        'min_length' => 0,
-                        'max_length' => 80,
-                        'type' => 'image',
-                        'multiple_field_special_params' => array(
-                            'folder' => 'bkdos',
-                            'width' => 716,
-                            'height' => 0
-                        )
-                    )
-                ),
-                'echo_police_color' => array(
-                    'real_name' => 'Couleur de la police',
-                    'type' => 'color',
-                    'default' => '',
-                    'admin_visible' => false,
-                    'users' => self::get_echo_user_types(),
-                    'special_params' => array()
-                ),
                 'echo_police' => array(
                     'real_name' => 'Police utilisée',
                     'type' => 'text',
@@ -957,16 +932,77 @@ class FieldsManager {
                     'users' => self::get_echo_user_types(),
                     'special_params' => array()
                 ),
-                'echo_minimum_police_size' => array(
-                    'real_name' => 'Taille minimum de la police (en pt)',
-                    'type' => 'number',
+                'echo_color_button' => array(
+                    'real_name' => 'Couleur de la police sur les boutons',
+                    'type' => 'color',
                     'default' => '',
                     'admin_visible' => false,
                     'users' => self::get_echo_user_types(),
-                    'special_params' => array(
-                        'min' => 5,
-                        'max' => 50
-                    )
+                    'special_params' => array()
+                ),
+                'echo_color_editor_select' => array(
+                    'real_name' => 'Couleur de la police pour le titre de la sélection des niveaux dans l\'éditeur',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_gamescreen' => array(
+                    'real_name' => 'Couleur de la police sur les écrans de victoire / défaite / pause',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_index' => array(
+                    'real_name' => 'Couleur de la police sur l\'écran d\'accueil',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_editor_items' => array(
+                    'real_name' => 'Couleur de la police sur les items dans l\'éditeur',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_loading_screen' => array(
+                    'real_name' => 'Couleur de la police sur l\'écran de chargement',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_login' => array(
+                    'real_name' => 'Couleur de la police sur l\'écran de connexion',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_popups' => array(
+                    'real_name' => 'Couleur de la police sur les popups',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
+                ),
+                'echo_color_save' => array(
+                    'real_name' => 'Couleur de la police sur la sauvegarde d\'un niveau (il y a un fond blanc)',
+                    'type' => 'color',
+                    'default' => '',
+                    'admin_visible' => false,
+                    'users' => self::get_echo_user_types(),
+                    'special_params' => array()
                 ),
                 'echo_number' => array(
                     'real_name' => 'Nombre',
@@ -980,7 +1016,7 @@ class FieldsManager {
                         'type' => 'image',
                         'multiple_field_special_params' => array(
                             'folder' => 'numbers',
-                            'width' => 100,
+                            'width' => 50,
                             'height' => 100
                         )
                     )
