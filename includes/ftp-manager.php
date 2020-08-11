@@ -45,8 +45,19 @@ class FtpManager {
                 // Create the folder first
                 ssh2_sftp_mkdir( $this->sftp, $remote_dir, 0750, true );
 
-                // $remote_url = pathinfo( $src_url, PATHINFO_DIRNAME ) . '/test_' . pathinfo( $src_url, PATHINFO_BASENAME );
+                // Remove all others file with the same name, because they can have another extension
+                $dir = pathinfo( $remote_url, PATHINFO_DIRNAME );
+                $filename = pathinfo( $remote_url, PATHINFO_FILENAME );
 
+                $debug = array();
+
+                foreach ( scandir ( $dir ) as $file ) {
+                    if ( $file !== '.' && $file != '..' && ! is_dir( $file ) && pathinfo( $file, PATHINFO_FILENAME ) === $filename ) {
+                        $debug[] = $dir . '/' . $file;
+                        unlink( $dir . '/' . $file );
+                    }
+                }
+                
                 // Copy file content on serveur
                 $res_file = fopen( $remote_url, 'w' );
                 $src_file = fopen( $src_url, 'r' );
